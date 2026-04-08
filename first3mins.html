@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="First 3">
+<meta name="theme-color" content="#0a0a0a">
+<title>First 3 Mins</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;600&display=swap');
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--text:#f0f0f0;--text2:#888;--text3:#555;--green:#00e676;--gdim:rgba(0,230,118,0.12);--gborder:rgba(0,230,118,0.3);--amber:#ffb300;--adim:rgba(255,179,0,0.1);--red:#ff5252;--rdim:rgba(255,82,82,0.1);--blue:#448aff;--bdim:rgba(68,138,255,0.1);--r:12px;--rs:8px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px;}
+.screen{display:none;padding:0 16px;}.screen.active{display:block;}
+.top-nav{position:sticky;top:0;background:rgba(10,10,10,0.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 16px 10px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid var(--border);z-index:100;margin:0 -16px;}
+.app-title{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{font-size:12px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.nav-tab.active{background:var(--gdim);border-color:var(--gborder);color:var(--green);font-weight:500;}
+#screen-setup{padding-top:60px;}
+.setup-wrap{padding:24px 16px;}
+.setup-logo{font-family:'DM Mono',monospace;font-size:36px;font-weight:700;color:var(--green);margin-bottom:4px;letter-spacing:2px;text-transform:uppercase;}
+.setup-tagline{font-size:14px;color:var(--text2);margin-bottom:32px;}
+.setup-section{margin-bottom:24px;}
+.sst{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;}
+.fl{font-size:13px;color:var(--text2);margin-bottom:6px;display:block;}
+.fi{width:100%;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--rs);padding:12px 14px;font-size:15px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;}
+.fi:focus{border-color:var(--green);}.fi::placeholder{color:var(--text3);}
+.btn-primary{width:100%;background:var(--green);color:#0a0a0a;border:none;border-radius:var(--rs);padding:14px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:4px;}
+.btn-primary:active{opacity:0.85;}
+.setup-steps{list-style:none;margin-top:8px;}
+.setup-steps li{font-size:13px;color:var(--text2);padding:8px 0;border-bottom:0.5px solid var(--border);display:flex;gap:10px;align-items:flex-start;line-height:1.5;}
+.setup-steps li:last-child{border-bottom:none;}
+.step-n{min-width:20px;height:20px;background:var(--bdim);color:var(--blue);border-radius:50%;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.err-msg{font-size:12px;color:var(--red);margin-top:4px;min-height:16px;}
+#screen-main{padding-top:8px;}
+.page-header{display:flex;justify-content:space-between;align-items:center;padding:16px 0 12px;}
+.page-title{font-size:15px;font-weight:500;}.page-sub{font-size:12px;color:var(--text3);margin-top:1px;}
+.btn-refresh{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--rs);padding:7px 13px;font-size:12px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-refresh:active{background:var(--surface2);}
+.settings-link-row{display:flex;justify-content:flex-end;padding:8px 0 0;}
+.settings-link{font-size:12px;color:var(--text3);cursor:pointer;}
+.game-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;}
+.game-header{padding:12px 14px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.game-matchup{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;}
+.game-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.badge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500;}
+.badge-spread{background:var(--adim);color:var(--amber);border:0.5px solid rgba(255,179,0,0.25);}
+.badge-time{color:var(--text3);font-size:11px;}
+.badge-na{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
+.inj-banner{padding:7px 14px;background:rgba(255,82,82,0.06);border-bottom:0.5px solid rgba(255,82,82,0.15);font-size:11px;color:var(--red);line-height:1.4;}
+.player-row{padding:14px;border-bottom:0.5px solid var(--border);}
+.player-row:last-child{border-bottom:none;}
+.player-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.player-left{display:flex;gap:10px;align-items:flex-start;}
+.rank-badge{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0;margin-top:1px;}
+.rank-1{background:rgba(255,179,0,0.15);color:var(--amber);}
+.rank-2{background:rgba(240,240,240,0.08);color:#aaa;}
+.rank-3{background:rgba(255,107,74,0.12);color:#ff6b4a;}
+.player-name{font-size:15px;font-weight:500;}.player-meta{font-size:12px;color:var(--text2);margin-top:2px;}
+.prob-block{text-align:right;}
+.prob-num{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--green);line-height:1;}
+.prob-label{font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:0.04em;}
+.stats-strip{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.stat-pill{background:var(--surface2);border:0.5px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text2);}
+.stat-pill strong{color:var(--text);font-weight:500;}
+.history-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
+.history-dots{display:flex;gap:5px;margin-bottom:4px;flex-wrap:wrap;}
+.h-dot{width:32px;height:32px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;position:relative;}
+.h-dot.scored{background:var(--gdim);color:var(--green);border:0.5px solid var(--gborder);}
+.h-dot.noscored{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
+.dot-inj{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--red);border-radius:50%;border:1.5px solid var(--surface);}
+.history-key{font-size:10px;color:var(--text3);margin-bottom:10px;}
+.odds-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.odds-card{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--rs);padding:10px 12px;}
+.odds-card.best-odds{background:var(--gdim);border-color:var(--gborder);}
+.odds-book{font-size:11px;color:var(--text3);margin-bottom:4px;}
+.odds-card.best-odds .odds-book{color:rgba(0,230,118,0.7);}
+.odds-val{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;}
+.odds-card.best-odds .odds-val{color:var(--green);}
+.odds-prop{font-size:10px;color:var(--text3);margin-top:2px;}
+.best-label{display:inline-block;font-size:9px;background:var(--green);color:#0a0a0a;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:5px;vertical-align:middle;}
+.odds-na-msg{font-size:12px;color:var(--text3);margin-bottom:12px;font-style:italic;}
+.btn-log-bet{background:transparent;border:0.5px solid var(--blue);border-radius:var(--rs);padding:7px 14px;font-size:12px;color:var(--blue);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;}
+.btn-log-bet.logged{background:var(--gdim);border-color:var(--gborder);color:var(--green);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;padding:20px 16px;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:20px 16px 40px;width:100%;max-width:480px;}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px;}
+.modal-title{font-size:16px;font-weight:500;margin-bottom:16px;}
+.modal-field{margin-bottom:14px;}
+.modal-field label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;}
+.modal-field input,.modal-field select{width:100%;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--rs);padding:11px 13px;font-size:15px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--green);}
+.modal-field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.modal-btns{display:flex;gap:8px;margin-top:20px;}
+.btn-cancel{flex:1;background:transparent;border:0.5px solid var(--border2);border-radius:var(--rs);padding:13px;font-size:15px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-save{flex:2;background:var(--green);color:#0a0a0a;border:none;border-radius:var(--rs);padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+#tab-tracker{display:none;padding-top:8px;}
+.tracker-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+.t-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:12px 14px;}
+.t-card-label{font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;}
+.t-card-val{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;}
+.t-card-val.green{color:var(--green);}.t-card-val.red{color:var(--red);}.t-card-val.amber{color:var(--amber);}
+.section-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
+.bet-item{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.bet-player{font-size:14px;font-weight:500;}.bet-detail{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;}
+.bet-result-btn{font-size:12px;padding:5px 11px;border-radius:20px;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;}
+.bet-result-btn.won{background:var(--gdim);border-color:var(--gborder);color:var(--green);font-weight:500;}
+.bet-result-btn.lost{background:var(--rdim);border-color:rgba(255,82,82,0.3);color:var(--red);font-weight:500;}
+.bet-result-btn.pending{background:var(--adim);border-color:rgba(255,179,0,0.25);color:var(--amber);}
+.empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:14px;line-height:1.6;}
+.loading-wrap{text-align:center;padding:48px 20px;}
+.loading-dot{display:inline-block;width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 1.2s ease-in-out infinite;margin:0 2px;}
+.loading-dot:nth-child(2){animation-delay:0.2s;}.loading-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes pulse{0%,80%,100%{opacity:0.2;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
+.loading-text{font-size:13px;color:var(--text2);margin-top:14px;}
+.stream-status{font-size:11px;color:var(--text3);text-align:center;padding:8px 0 4px;}
+</style>
+</head>
+<body>
+
+<div class="screen active" id="screen-setup">
+  <div class="setup-wrap">
+    <div class="setup-logo">FIRST 3.</div>
+    <div class="setup-tagline">NBA early scoring research + bet tracker</div>
+    <div class="setup-section">
+      <div class="sst">Your account</div>
+      <label class="fl">Passphrase — syncs your data across devices</label>
+      <input class="fi" type="password" id="setup-pass" placeholder="Choose a passphrase..." autocomplete="off"/>
+      <label class="fl">The Odds API key</label>
+      <input class="fi" type="text" id="setup-odds-key" placeholder="Paste your API key here..." autocomplete="off"/>
+      <div class="err-msg" id="setup-err"></div>
+      <button class="btn-primary" onclick="doSetup()">Get started</button>
+    </div>
+    <div class="setup-section">
+      <div class="sst">Get your free Odds API key</div>
+      <ol class="setup-steps">
+        <li><span class="step-n">1</span>Go to <strong style="color:#f0f0f0">the-odds-api.com</strong> and sign up free</li>
+        <li><span class="step-n">2</span>Confirm your email and log in</li>
+        <li><span class="step-n">3</span>Copy your API key from the dashboard</li>
+        <li><span class="step-n">4</span>Paste it above — 500 free requests/month</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-main">
+  <div class="top-nav">
+    <span class="app-title">FIRST 3.</span>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('games',this)">Games</button>
+      <button class="nav-tab" onclick="switchTab('tracker',this)">Tracker</button>
+    </div>
+  </div>
+  <div id="tab-games">
+    <div class="settings-link-row"><span class="settings-link" onclick="openSettings()">settings</span></div>
+    <div class="page-header">
+      <div><div class="page-title">Today's top picks</div><div class="page-sub">First 3 minutes · top 3 per game</div></div>
+      <button class="btn-refresh" onclick="loadAll()">↻ Refresh</button>
+    </div>
+    <div id="stream-status" class="stream-status"></div>
+    <div id="games-container">
+      <div class="loading-wrap"><div><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div><div class="loading-text">Loading...</div></div>
+    </div>
+  </div>
+  <div id="tab-tracker">
+    <div class="page-header"><div class="page-title">Bet tracker</div></div>
+    <div class="tracker-stats" id="tracker-stats"></div>
+    <div class="section-title">Your bets</div>
+    <div id="bets-list"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="bet-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Log a bet</div>
+    <div class="modal-field"><label>Player</label><input type="text" id="m-player" readonly/></div>
+    <div class="modal-field"><label>Book</label><select id="m-book"><option>DraftKings</option><option>FanDuel</option></select></div>
+    <div class="modal-field"><label>Odds</label><input type="text" id="m-odds" placeholder="e.g. -130 or +115"/></div>
+    <div class="modal-field"><label>Stake ($)</label><input type="number" id="m-stake" placeholder="e.g. 25" min="1"/></div>
+    <div class="modal-field"><label>Game</label><input type="text" id="m-game" readonly/></div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closeBetModal()">Cancel</button><button class="btn-save" onclick="saveBet()">Save bet</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Settings</div>
+    <div class="modal-field"><label>The Odds API key</label><input type="text" id="s-key"/></div>
+    <div class="modal-field"><label>Passphrase (leave blank to keep current)</label><input type="password" id="s-pass" placeholder="New passphrase..."/></div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closeSettings()">Cancel</button><button class="btn-save" onclick="saveSettings()">Save</button></div>
+  </div>
+</div>
+
+<script>
+const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
+const ODDS_BASE  = 'https://api.the-odds-api.com/v4/sports/basketball_nba';
+const AUTO_KEY   = 'f3m_auto';
+const DATA_PFX   = 'f3m_data_';
+
+let STATE = {oddsKey:'',passphrase:'',bets:[]};
+let activeBet = null;
+let currentGamesData = null;
+
+function hashPass(p){let h=0;for(let i=0;i<p.length;i++){h=((h<<5)-h)+p.charCodeAt(i);h|=0;}return Math.abs(h).toString(36);}
+function dataKey(){return DATA_PFX+hashPass(STATE.passphrase);}
+function saveState(){try{localStorage.setItem(dataKey(),JSON.stringify(STATE));localStorage.setItem(AUTO_KEY,JSON.stringify({passphrase:STATE.passphrase,oddsKey:STATE.oddsKey}));}catch(e){}}
+function loadSaved(pass,key){try{const raw=localStorage.getItem(DATA_PFX+hashPass(pass));return raw?{...JSON.parse(raw),passphrase:pass,oddsKey:key}:null;}catch(e){return null;}}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  try{
+    const auto=JSON.parse(localStorage.getItem(AUTO_KEY)||'null');
+    if(auto&&auto.passphrase&&auto.oddsKey){
+      const saved=loadSaved(auto.passphrase,auto.oddsKey);
+      STATE=saved||{oddsKey:auto.oddsKey,passphrase:auto.passphrase,bets:[]};
+      STATE.oddsKey=auto.oddsKey;STATE.passphrase=auto.passphrase;
+      showMain();return;
+    }
+  }catch(e){}
+});
+
+function doSetup(){
+  const pass=document.getElementById('setup-pass').value.trim();
+  const key=document.getElementById('setup-odds-key').value.trim();
+  const err=document.getElementById('setup-err');
+  if(!pass){err.textContent='Please enter a passphrase.';return;}
+  if(!key){err.textContent='Please enter your Odds API key.';return;}
+  err.textContent='';
+  const saved=loadSaved(pass,key);
+  STATE=saved||{oddsKey:key,passphrase:pass,bets:[]};
+  STATE.oddsKey=key;STATE.passphrase=pass;
+  saveState();showMain();
+}
+
+function showMain(){
+  document.getElementById('screen-setup').classList.remove('active');
+  document.getElementById('screen-main').classList.add('active');
+  loadAll();
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-games').style.display=tab==='games'?'block':'none';
+  document.getElementById('tab-tracker').style.display=tab==='tracker'?'block':'none';
+  if(tab==='tracker')renderTracker();
+}
+
+async function loadAll(){
+  document.getElementById('games-container').innerHTML='<div class="loading-wrap"><div><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div><div class="loading-text">Fetching NBA data via Claude...</div></div>';
+  document.getElementById('stream-status').textContent='';
+
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    const prompt=`You are a sports data assistant. Fetch NBA data and return ONLY a valid JSON object, no other text.
+
+Steps:
+1. Fetch today's NBA scoreboard: https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${today.replace(/-/g,'')}
+2. Get the list of today's games (scheduled/upcoming games preferred, use recent completed if none scheduled)
+3. For each team playing today, fetch their last 5 completed game summaries from: https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/{TEAM_ABBR}/schedule?season=2026
+   Then for each of those game IDs fetch: https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event={GAME_ID}
+4. From each game summary, extract plays from period 1 where the clock shows 9:00 or higher (first 3 minutes elapsed = clock between 12:00 and 9:00)
+5. For each scoring play in that window, record the player name, team, and points
+6. Also fetch injuries: https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries
+
+Return this exact JSON structure:
+{
+  "games": [
+    {
+      "matchup": "ATL @ CLE",
+      "homeTeam": "CLE",
+      "awayTeam": "ATL",
+      "homeFullName": "Cleveland Cavaliers",
+      "awayFullName": "Atlanta Hawks",
+      "gameTime": "7:00 PM",
+      "top3": [
+        {
+          "name": "Donovan Mitchell",
+          "team": "CLE",
+          "scoredGames": 4,
+          "totalGames": 5,
+          "prob": 80,
+          "avgPts": 2.4,
+          "minPts": 0,
+          "maxPts": 6,
+          "history": [
+            {"scored": true, "pts": 3, "date": "Apr 7", "injuryNote": ""},
+            {"scored": true, "pts": 2, "date": "Apr 5", "injuryNote": "LeBron OUT"},
+            {"scored": false, "pts": 0, "date": "Apr 3", "injuryNote": ""},
+            {"scored": true, "pts": 4, "date": "Apr 1", "injuryNote": ""},
+            {"scored": true, "pts": 2, "date": "Mar 30", "injuryNote": ""}
+          ]
+        }
+      ],
+      "injuries": ["Player Name (Status)"]
+    }
+  ]
+}
+
+Important: injuryNote should mention if a key teammate was out for that specific game. Only include top 3 players per game ranked by probability then avgPts. Return ONLY the JSON, no markdown, no explanation.`;
+
+    const response = await fetch(CLAUDE_API, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{role:'user', content: prompt}]
+      })
+    });
+
+    if(!response.ok){
+      throw new Error(`Claude API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.content?.map(c=>c.text||'').join('') || '';
+    const clean = text.replace(/```json|```/g,'').trim();
+
+    let parsed;
+    try{ parsed = JSON.parse(clean); }
+    catch(e){
+      console.error('Parse error:', text.slice(0,500));
+      throw new Error('Could not parse response');
+    }
+
+    currentGamesData = parsed;
+
+    const[oddsMap, spreadsData] = await Promise.all([fetchAllOdds(), fetchSpreads()]);
+    renderGames(parsed.games||[], oddsMap, spreadsData);
+
+  }catch(e){
+    console.error(e);
+    document.getElementById('games-container').innerHTML=`<div class="loading-wrap"><div class="loading-text">Could not load data: ${e.message}<br><br>Tap Refresh to try again.</div></div>`;
+  }
+}
+
+async function fetchAllOdds(){
+  if(!STATE.oddsKey)return{};
+  try{
+    const r=await fetch(`${ODDS_BASE}/events/?apiKey=${STATE.oddsKey}`);
+    if(!r.ok)return{};
+    const events=await r.json();
+    if(!Array.isArray(events)||!events.length)return{};
+    const oddsMap={};
+    await Promise.all(events.slice(0,12).map(async ev=>{
+      try{
+        const r2=await fetch(`${ODDS_BASE}/events/${ev.id}/odds?apiKey=${STATE.oddsKey}&regions=us&markets=player_first3min_points&bookmakers=draftkings,fanduel&oddsFormat=american`);
+        if(!r2.ok)return;
+        const d=await r2.json();
+        oddsMap[ev.id]={...d,home_team:ev.home_team,away_team:ev.away_team};
+      }catch(e){}
+    }));
+    return oddsMap;
+  }catch(e){return{};}
+}
+
+async function fetchSpreads(){
+  if(!STATE.oddsKey)return null;
+  try{
+    const r=await fetch(`${ODDS_BASE}/odds/?apiKey=${STATE.oddsKey}&regions=us&markets=spreads&bookmakers=draftkings&oddsFormat=american`);
+    if(!r.ok)return null;return await r.json();
+  }catch(e){return null;}
+}
+
+function teamMatch(evTeam,abbr,fullName){
+  if(!evTeam)return false;
+  const e=evTeam.toLowerCase(),a=(abbr||'').toLowerCase(),f=(fullName||'').toLowerCase();
+  return e.includes(a)||e.includes(f)||f.includes(e.split(' ').pop())||a===e.split(' ').pop();
+}
+
+function getSpread(spreadsData,homeAbbr,awayAbbr,homeFull,awayFull){
+  if(!spreadsData)return null;
+  for(const ev of spreadsData){
+    if(teamMatch(ev.home_team,homeAbbr,homeFull)||teamMatch(ev.away_team,awayAbbr,awayFull)){
+      for(const bk of(ev.bookmakers||[])){for(const mkt of(bk.markets||[])){if(mkt.key==='spreads'){
+        const fav=mkt.outcomes.reduce((a,b)=>a.point<b.point?a:b);
+        return`${fav.name.split(' ').slice(-1)[0]} ${fav.point>0?'+':''}${fav.point}`;
+      }}}
+    }
+  }
+  return null;
+}
+
+function getPlayerOdds(oddsMap,playerName,homeAbbr,awayAbbr,homeFull,awayFull){
+  if(!oddsMap||!Object.keys(oddsMap).length)return{dk:null,fd:null};
+  const pLast=playerName.split(' ').slice(-1)[0].toLowerCase();
+  let dk=null,fd=null;
+  for(const ev of Object.values(oddsMap)){
+    if(!teamMatch(ev.home_team,homeAbbr,homeFull)&&!teamMatch(ev.away_team,awayAbbr,awayFull))continue;
+    for(const bk of(ev.bookmakers||[])){
+      for(const mkt of(bk.markets||[])){
+        for(const oc of(mkt.outcomes||[])){
+          const ocLast=(oc.description||oc.name||'').split(' ').slice(-1)[0].toLowerCase();
+          if(ocLast===pLast){
+            const val=oc.price>0?'+'+oc.price:String(oc.price);
+            if(bk.key==='draftkings')dk=val;
+            if(bk.key==='fanduel')fd=val;
+          }
+        }
+      }
+    }
+  }
+  return{dk,fd};
+}
+
+function betterBook(dk,fd){
+  if(!dk&&!fd)return null;if(!dk)return'fd';if(!fd)return'dk';
+  const p=s=>{const n=parseInt(s);return n>0?n/(n+100):100/(Math.abs(n)+100);};
+  return p(dk)<=p(fd)?'dk':'fd';
+}
+
+function renderGames(games,oddsMap,spreadsData){
+  const el=document.getElementById('games-container');
+  if(!games||!games.length){el.innerHTML='<div class="loading-wrap"><div class="loading-text">No games found for today.</div></div>';return;}
+  let html='';
+  for(const g of games){
+    const spread=getSpread(spreadsData,g.homeTeam,g.awayTeam,g.homeFullName,g.awayFullName);
+    html+=`<div class="game-card">`;
+    html+=`<div class="game-header"><span class="game-matchup">${g.matchup}</span><div class="game-badges">${spread?`<span class="badge badge-spread">${spread}</span>`:''}<span class="badge-time">${g.gameTime||''}</span>${!STATE.oddsKey?`<span class="badge badge-na">Add key in settings</span>`:''}</div></div>`;
+    if(g.injuries&&g.injuries.length){html+=`<div class="inj-banner">Injuries: ${g.injuries.slice(0,5).join(' · ')}</div>`;}
+    if(!g.top3||!g.top3.length){
+      html+=`<div style="padding:14px;font-size:13px;color:var(--text3);">No early scoring data found for this matchup.</div>`;
+    }else{
+      g.top3.forEach((p,i)=>{
+        const{dk,fd}=getPlayerOdds(oddsMap,p.name,g.homeTeam,g.awayTeam,g.homeFullName,g.awayFullName);
+        const better=betterBook(dk,fd);
+        const hasBet=STATE.bets.some(b=>b.player===p.name&&b.game===g.matchup);
+        const rc=['rank-1','rank-2','rank-3'][i];
+        const sp=n=>(n||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+        html+=`<div class="player-row">`;
+        html+=`<div class="player-top"><div class="player-left"><div class="rank-badge ${rc}">${i+1}</div><div><div class="player-name">${p.name}</div><div class="player-meta">${p.team} · ${p.scoredGames}/${p.totalGames} games</div></div></div><div class="prob-block"><div class="prob-num">${p.prob}%</div><div class="prob-label">probability</div></div></div>`;
+        html+=`<div class="stats-strip"><div class="stat-pill">Avg early pts <strong>${p.avgPts}</strong></div><div class="stat-pill">Range <strong>${p.minPts}–${p.maxPts}</strong></div></div>`;
+        html+=`<div class="history-label">Last ${(p.history||[]).length} games</div><div class="history-dots">`;
+        (p.history||[]).forEach(h=>{
+          const injNote=h.injuryNote?`<div class="dot-inj"></div>`:'';
+          html+=`<div class="h-dot ${h.scored?'scored':'noscored'}" title="${h.date}${h.injuryNote?' · '+h.injuryNote:''}">${h.scored?h.pts:'—'}${injNote}</div>`;
+        });
+        html+=`</div>`;
+        const hasInj=(p.history||[]).some(h=>h.injuryNote);
+        if(hasInj){
+          const injNotes=[...new Set((p.history||[]).filter(h=>h.injuryNote).map(h=>h.injuryNote))].join(', ');
+          html+=`<div style="font-size:11px;color:var(--red);margin-bottom:6px;">Red dot: ${injNotes}</div>`;
+        }
+        html+=`<div class="history-key">Green = scored in first 3 min · Gray = no score</div>`;
+        html+=`<div class="odds-grid"><div class="odds-card${better==='dk'?' best-odds':''}"><div class="odds-book">DraftKings${better==='dk'?'<span class="best-label">BEST</span>':''}</div><div class="odds-val">${dk||'—'}</div><div class="odds-prop">Points · 1st 3 mins</div></div><div class="odds-card${better==='fd'?' best-odds':''}"><div class="odds-book">FanDuel${better==='fd'?'<span class="best-label">BEST</span>':''}</div><div class="odds-val">${fd||'—'}</div><div class="odds-prop">Score X+ pts · first 3 mins</div></div></div>`;
+        if(!dk&&!fd&&STATE.oddsKey)html+=`<div class="odds-na-msg">Odds not posted yet — refresh closer to game time</div>`;
+        html+=`<div><button class="btn-log-bet${hasBet?' logged':''}" onclick="openBetModal('${sp(p.name)}','${sp(g.matchup)}','${dk||''}','${fd||''}')">${hasBet?'✓ Bet logged':'+ Log a bet'}</button></div>`;
+        html+=`</div>`;
+      });
+    }
+    html+=`</div>`;
+  }
+  el.innerHTML=html;
+}
+
+function openBetModal(player,game,dk,fd){
+  activeBet={player,game,dk,fd};
+  document.getElementById('m-player').value=player;
+  document.getElementById('m-game').value=game;
+  document.getElementById('m-odds').value='';
+  document.getElementById('m-stake').value='';
+  document.getElementById('bet-modal').classList.add('open');
+}
+function closeBetModal(){document.getElementById('bet-modal').classList.remove('open');}
+
+function saveBet(){
+  const book=document.getElementById('m-book').value;
+  const odds=document.getElementById('m-odds').value.trim();
+  const stake=parseFloat(document.getElementById('m-stake').value)||0;
+  if(!odds){alert('Please enter the odds.');return;}
+  STATE.bets.push({id:Date.now(),player:activeBet.player,game:activeBet.game,book,odds,stake,result:'pending',date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  saveState();closeBetModal();
+  if(currentGamesData){
+    const[oddsMap,spreadsData]=Promise.all([fetchAllOdds(),fetchSpreads()]).then(([o,s])=>renderGames(currentGamesData.games||[],o,s));
+  }
+}
+
+function renderTracker(){
+  const bets=STATE.bets;
+  const won=bets.filter(b=>b.result==='won');
+  const lost=bets.filter(b=>b.result==='lost');
+  const totalStake=bets.reduce((s,b)=>s+(b.stake||0),0);
+  const profit=won.reduce((s,b)=>{const o=parseInt(b.odds);return s+(o>0?(b.stake||0)*(o/100):(b.stake||0)*(100/Math.abs(o)));},0)-lost.reduce((s,b)=>s+(b.stake||0),0);
+  const acc=(won.length+lost.length)>0?Math.round((won.length/(won.length+lost.length))*100):0;
+  const roi=totalStake>0?((profit/totalStake)*100).toFixed(1):'0.0';
+  document.getElementById('tracker-stats').innerHTML=`
+    <div class="t-card"><div class="t-card-label">Record</div><div class="t-card-val">${won.length}-${lost.length}</div></div>
+    <div class="t-card"><div class="t-card-label">Accuracy</div><div class="t-card-val ${acc>=50?'green':'amber'}">${acc}%</div></div>
+    <div class="t-card"><div class="t-card-label">Profit/Loss</div><div class="t-card-val ${profit>=0?'green':'red'}">${profit>=0?'+':''}$${Math.abs(profit).toFixed(0)}</div></div>
+    <div class="t-card"><div class="t-card-label">ROI</div><div class="t-card-val ${parseFloat(roi)>=0?'green':'red'}">${parseFloat(roi)>=0?'+':''}${roi}%</div></div>`;
+  if(!bets.length){document.getElementById('bets-list').innerHTML='<div class="empty-state">No bets logged yet.<br>Go to Games and tap + Log a bet.</div>';return;}
+  document.getElementById('bets-list').innerHTML=[...bets].reverse().map(b=>`
+    <div class="bet-item"><div><div class="bet-player">${b.player}</div><div class="bet-detail">${b.game}<br>${b.book} · ${b.odds}${b.stake?' · $'+b.stake:''} · ${b.date}</div></div>
+    <button class="bet-result-btn ${b.result}" onclick="cycleResult(${b.id})">${b.result==='pending'?'Pending':b.result==='won'?'Won':'Lost'}</button></div>`).join('');
+}
+
+function cycleResult(id){
+  const bet=STATE.bets.find(b=>b.id===id);if(!bet)return;
+  const c={pending:'won',won:'lost',lost:'pending'};bet.result=c[bet.result];
+  saveState();renderTracker();
+}
+
+function openSettings(){
+  document.getElementById('s-key').value=STATE.oddsKey||'';
+  document.getElementById('s-pass').value='';
+  document.getElementById('settings-modal').classList.add('open');
+}
+function closeSettings(){document.getElementById('settings-modal').classList.remove('open');}
+function saveSettings(){
+  const key=document.getElementById('s-key').value.trim();
+  const pass=document.getElementById('s-pass').value.trim();
+  if(key)STATE.oddsKey=key;if(pass)STATE.passphrase=pass;
+  saveState();closeSettings();loadAll();
+}
+
+document.getElementById('bet-modal').addEventListener('click',function(e){if(e.target===this)closeBetModal();});
+document.getElementById('settings-modal').addEventListener('click',function(e){if(e.target===this)closeSettings();});
+</script>
+</body>
+</html>
